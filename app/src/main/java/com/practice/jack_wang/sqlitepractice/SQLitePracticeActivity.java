@@ -40,8 +40,6 @@ public class SQLitePracticeActivity extends AppCompatActivity {
         btnQuery.setOnClickListener(btnQuerylistener);
         btnDelete.setOnClickListener(btnDeletelistener);
 
-
-
         MyDBHelper helper = new MyDBHelper(this, "taipeiParkInfo.db", null, 1);
         Cursor c = helper.getReadableDatabase().query(
                 "parkInfo", null, null, null, null, null, null);
@@ -126,8 +124,7 @@ public class SQLitePracticeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s){
             super.onPostExecute(s);
-            Log.d("JSON",s);
-            Log.e("123","123");
+//            Log.d("JSON",s);
             parseJSON(s);
 
         }
@@ -143,15 +140,13 @@ public class SQLitePracticeActivity extends AppCompatActivity {
                     String OpenTime = jsonObject.getString("OpenTime");
                     String Introduction = jsonObject.getString("Introduction");
 
-                    Log.e("test msg : ","ac :" + ParkName+",datee :" + Name+ ",am : "+OpenTime+ ",ty : "+Introduction);
-
                     values.put("ParkName",ParkName);
                     values.put("Name",Name);
                     values.put("OpenTime",OpenTime);
                     values.put("Introduction",Introduction);
 
-                    long id = helper.getWritableDatabase().insert("parkInfo", null, values);
-                    Log.d("ADD", id+"");
+//                    long id = helper.getWritableDatabase().insert("parkInfo", null, values);
+//                    Log.d("ADD", id+"");
                 }
                 finish();
                 startActivity(getIntent());
