@@ -16,17 +16,17 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="2" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_weight="9">
+            android:layout_weight="8"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/Add"
@@ -34,17 +34,33 @@
                 tools:layout_editor_absoluteY="447dp" />
 
             <Button
-                android:id="@+id/btnQuery"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnDeleteSingle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/Query"
                 tools:layout_editor_absoluteX="148dp"
                 tools:layout_editor_absoluteY="447dp" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/btnAddsingle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/AddnewData" />
+
             <Button
                 android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/Delete"

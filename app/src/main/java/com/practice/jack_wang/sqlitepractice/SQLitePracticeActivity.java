@@ -1,17 +1,21 @@
 package com.practice.jack_wang.sqlitepractice;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +29,7 @@ import java.net.URL;
 
 public class SQLitePracticeActivity extends AppCompatActivity {
 
-    private Button btnAdd,btnQuery,btnDelete;
-    private TextView txtIndex,txtParkName,txtName,txtOpenTime,txtIntroduction;
+    private Button btnAdd,btnDeleteSingleRow,btnDelete,btnAddSingle;
     private ContentValues values = new ContentValues();
     private MyDBHelper helper ;
     private ListView list;
@@ -34,18 +37,20 @@ public class SQLitePracticeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sqlite_practice);
+
         findViews();
+
         helper = MyDBHelper.getInstance(this);
         btnAdd.setOnClickListener(btnAddlistener);
-        btnQuery.setOnClickListener(btnQuerylistener);
+        btnDeleteSingleRow.setOnClickListener(btnDeleteSingleRowlistener);
         btnDelete.setOnClickListener(btnDeletelistener);
+        btnAddSingle.setOnClickListener(btnAddSinglelistener);
 
         MyDBHelper helper = new MyDBHelper(this, "taipeiParkInfo.db", null, 1);
         Cursor c = helper.getReadableDatabase().query(
                 "parkInfo", null, null, null, null, null, null);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-                R.layout.list_row,
-                c,
+                R.layout.list_row, c,
                 new String[] {"_id","ParkName","Name","OpenTime","Introduction"},
                 new int[] {R.id.txtIndex, R.id.txtParkName,R.id.txtName,R.id.txtOpenTime,R.id.txtIntroduction},
                 0);
@@ -62,13 +67,90 @@ public class SQLitePracticeActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener btnQuerylistener = new View.OnClickListener() {
+    private View.OnClickListener btnDeleteSingleRowlistener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
+            final View item = LayoutInflater.from(SQLitePracticeActivity.this).inflate(R.layout.alertdialog, null);
+            new AlertDialog.Builder(SQLitePracticeActivity.this)
+                    .setTitle(R.string.question)
+                    .setView(item)
+                    .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-            finish();
-            startActivity(getIntent());
+                            SQLiteDatabase db = helper.getWritableDatabase();
+                            EditText edDeleteRowNum = (EditText) item.findViewById(R.id.edDeleteRow);
+
+                            if(edDeleteRowNum.getText().toString().matches("")){
+                                Toast toast = Toast.makeText(SQLitePracticeActivity.this, "Can't be empty", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                            else{
+                                String index = edDeleteRowNum.getText().toString();
+                                db.delete("parkInfo","_id"+"="+index ,null) ;
+                                finish();
+                                startActivity(getIntent());
+                                Toast toast = Toast.makeText(SQLitePracticeActivity.this, "delete data success", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .show();
+
+        }
+    };
+    private View.OnClickListener btnAddSinglelistener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            final View item = LayoutInflater.from(SQLitePracticeActivity.this).inflate(R.layout.alertdialogadd, null);
+            new AlertDialog.Builder(SQLitePracticeActivity.this)
+                    .setTitle(R.string.question2)
+                    .setView(item)
+                    .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            SQLiteDatabase db = helper.getWritableDatabase();
+                            EditText edParkName = (EditText) item.findViewById(R.id.edParkName);
+                            EditText edName = (EditText) item.findViewById(R.id.edName);
+                            EditText edOpenTime = (EditText) item.findViewById(R.id.edOpenTime);
+                            EditText edIntro = (EditText) item.findViewById(R.id.edIntro);
+
+                            if(edParkName.getText().toString().matches("") || edName.getText().toString().matches("")
+                                    || edOpenTime.getText().toString().matches("") || edIntro.getText().toString().matches("")){
+                                Toast toast = Toast.makeText(SQLitePracticeActivity.this, "Can't be empty", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                            else{
+
+                                values.put("ParkName",edParkName.getText().toString());
+                                values.put("Name",edName.getText().toString());
+                                values.put("OpenTime",edOpenTime.getText().toString());
+                                values.put("Introduction",edIntro.getText().toString());
+                                helper.getWritableDatabase().insert("parkInfo", null, values);
+
+                                finish();
+                                startActivity(getIntent());
+                                Toast toast = Toast.makeText(SQLitePracticeActivity.this, "add data success", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .show();
         }
     };
 
@@ -85,13 +167,9 @@ public class SQLitePracticeActivity extends AppCompatActivity {
     private void findViews(){
 
         btnAdd = (Button)findViewById(R.id.btnAdd);
-        btnQuery = (Button)findViewById(R.id.btnQuery);
+        btnDeleteSingleRow = (Button)findViewById(R.id.btnDeleteSingle);
         btnDelete = (Button)findViewById(R.id.btnDelete);
-        txtParkName = (TextView)findViewById(R.id.txtParkName);
-        txtName = (TextView)findViewById(R.id.txtName);
-        txtOpenTime = (TextView)findViewById(R.id.txtOpenTime);
-        txtIndex = (TextView)findViewById(R.id.txtIndex);
-        txtIntroduction = (TextView)findViewById(R.id.txtIntroduction);
+        btnAddSingle = (Button)findViewById(R.id.btnAddsingle);
         list = (ListView) findViewById(R.id.list);
 
     }
@@ -124,7 +202,6 @@ public class SQLitePracticeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s){
             super.onPostExecute(s);
-//            Log.d("JSON",s);
             parseJSON(s);
 
         }
@@ -145,8 +222,10 @@ public class SQLitePracticeActivity extends AppCompatActivity {
                     values.put("OpenTime",OpenTime);
                     values.put("Introduction",Introduction);
 
+                    helper.getWritableDatabase().insert("parkInfo", null, values);
+
 //                    long id = helper.getWritableDatabase().insert("parkInfo", null, values);
-//                    Log.d("ADD", id+"");
+//                    Log.e("ADD", id+"!");
                 }
                 finish();
                 startActivity(getIntent());

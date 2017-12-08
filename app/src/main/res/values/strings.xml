@@ -1,6 +1,19 @@
 <resources>
-    <string name="app_name">TrainingProject</string>
-    <string name="Add">Add</string>
-    <string name="Query">Query</string>
-    <string name="Delete">Delete</string>
+    <string name="app_name">SQLitePractice</string>
+
+    <string name="Add">Add form Internet</string>
+    <string name="Query">Delete Single Row</string>
+    <string name="AddnewData">add New Data</string>
+    <string name="Delete">Delete All Data</string>
+
+    <string name="question">Please fill in the row number :</string>
+    <string name="question2">Please fill out the form :</string>
+
+    <string name="submit">submit</string>
+    <string name="cancel">cancel</string>
+
+    <string name="ParkName">公園名稱:</string>
+    <string name="ObjectName">物品名稱:</string>
+    <string name="OpenTime">開放時間:</string>
+    <string name="Introduction">簡介:</string>
 </resources>
